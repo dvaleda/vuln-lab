@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sigurnosne ranjivosti</title>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+    <header>
+        <h1>Sigurnosne ranjivosti</h1>
+        <p>Implementacija: <strong>SQL Injection</strong> i <strong>Broken Authentication</strong></p>
+    </header>
+
+    <main class="container">
+        <!-- SQL Injection -->
+        <section class="card card-red">
+        <div class="card-header">
+            <h2>SQL Injection</h2>
+            <h2></h2>
+            <h2></h2>
+            <h2></h2>
+            <h2></h2>
+            <h2></h2>
+            <h2></h2>
+            <h2></h2>
+            <label class="switch">
+            <input type="checkbox" id="sqli-enabled" checked />
+            <span class="slider"></span>
+            </label>
+            <p id="sqli-status">Ranjivost uključena</p>
+        </div>
+        <p class="desc">
+            Demonstracija SQL ubacivanja. Upiši <code>' OR 1=1 --</code> i vidi kako se u ranjivom modu
+            prikazuju svi zapisi.
+        </p>
+        <form id="sqli-form">
+            <label>Poruka:</label>
+            <input id="sqli-msg" value="admin" autocomplete="off"/>
+            <label>PIN:</label>
+            <input id="pin" type="password" value="1234" autocomplete="off" />
+            <button id="sqli-submit" type="button">Spremi podatke</button>
+        </form>
+        <pre id="sqli-output"></pre>
+        </section>
+
+        <!-- Broken Authentication -->
+        <section class="card card-blue">
+        <div class="card-header">
+            <h2>Broken Authentication</h2>
+            <h2></h2>
+            <label class="switch">
+            <input type="checkbox" id="auth-enabled" checked />
+            <span class="slider"></span>
+            </label>
+            <p id="auth-status">Ranjivost uključena</p>
+        </div>
+        <p class="desc">
+            U ranjivom modu lozinke se čuvaju u plain-textu i kolačići nisu sigurni. Probaj prijavu s
+            <code>admin / admin123</code>.
+        </p>
+        <form id="auth-form">
+            <label>Korisnik:</label>
+            <input id="auth-user" value="admin" autocomplete="off" />
+            <label>Lozinka:</label>
+            <input id="auth-pass" type="password" value="admin123" autocomplete="off" />
+            <button id="auth-submit" type="button">Prijavi se</button>
+        </form>
+        <pre id="auth-output"></pre>
+        </section>
+    </main>
+
+    <footer>
+        <p>JMBAG: 0036532668</p>
+    </footer>
+
+    <script src="main.js"></script>
+</body>
+</html>
