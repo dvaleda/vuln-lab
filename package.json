@@ -4,17 +4,19 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
-    "init-database": "node init-database.js"
+    "start": "node server-postgres.js",
+    "init-database": "node init-postgres.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^6.0.0",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.3",
     "cookie-parser": "^1.4.7",
     "express": "^4.21.2",
+    "pg": "^8.16.3",
     "sqlite3": "^5.1.7"
   }
 }
