@@ -26,7 +26,7 @@ async function init() {
         CREATE TABLE users (
         id SERIAL PRIMARY KEY,
         username TEXT UNIQUE,
-        password_plain TEXT
+        password_plain TEXT,
         password_hash TEXT
         );
     `);
