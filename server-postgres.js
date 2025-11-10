@@ -33,9 +33,13 @@ client.connect().then(() => console.log('Connected to Postgres.')).catch(console
 
 // SQL injection
 app.post('/search/query', async (req, res) => {
-    const msg = String(req.body.msg || '');
+    const rawMsg = String(req.body.msg || '');
+    const msg = (() => {
+        try { return decodeURIComponent(rawMsg); } catch (e) { return rawMsg; }
+    })();
     const mode = String(req.body.mode || 'vuln');
     const pin = String(req.body.pin || '');
+    console.log('DEBUG /search/query', { ip: req.ip, mode, msg_preview: msg.slice(0,200) });
 
     try {
         let sql, rows;

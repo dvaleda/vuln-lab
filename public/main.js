@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const pin = (document.getElementById('pin')?.value || '');
 
     try {
-      const body = new URLSearchParams({ msg, mode, pin });
+      const body = new URLSearchParams({ msg: encodeURIComponent(msg), mode, pin });
       const res = await fetch('/search/query', { method: 'POST', body });
       if (!res.ok) {
         // read error detail
