@@ -21,18 +21,44 @@ document.addEventListener('DOMContentLoaded', () => {
   authCheckbox && authCheckbox.addEventListener('change', updAuth);
 
   // print JSON
-  function showJSON(el, obj) {
-    try { el.textContent = JSON.stringify(obj, null, 2); } catch (e) { el.textContent = String(obj); }
+  function renderRows(el, data, mode) {
+    if (!el) return;
+    if (!data || !Array.isArray(data.rows)) {
+      el.textContent = 'nema rezultata';
+      return;
+    }
+    if (mode === 'safe') {
+      const rows = data.rows;
+      if (rows.length === 0) {
+        el.textContent = 'Nema podataka za zadani upit.';
+        return;
+      }
+      const header = `Prikaz rezultata\n\n`;
+      const lines = rows.map(r => `id: ${r.id}  |  content: ${r.content}`);
+      el.textContent = header + lines.join('\n');
+      return;
   }
+
+  if (mode === 'vuln') {
+    try {
+      el.textContent = JSON.stringify(data, null, 2);
+    } catch (e) {
+      el.textContent = String(data);
+    }
+    return;
+  }
+  // fallback
+  el.textContent = JSON.stringify(data, null, 2);
+}
 
   // SQLi /search/query
   sqliButton.addEventListener('click', async () => {
-    sqliOutput.textContent = 'Kontaktiram server...';
     const msg = (sqliMsg && sqliMsg.value) || '';
     const mode = sqliCheckbox.checked ? 'vuln' : 'safe';
+    const pin = (document.getElementById('pin')?.value || '');
 
     try {
-      const body = new URLSearchParams({ msg, mode });
+      const body = new URLSearchParams({ msg, mode, pin });
       const res = await fetch('/search/query', { method: 'POST', body });
       if (!res.ok) {
         // read error detail
@@ -42,7 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
       const data = await res.json();
-      showJSON(sqliOutput, data);
+      renderRows(sqliOutput, data, data.mode || mode);
       console.log('/search/query response', data);
     } catch (err) {
       sqliOutput.textContent = 'Greška u komunikaciji sa serverom: ' + err;
@@ -53,7 +79,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // auth /auth/login
   if (authButton && authUser && authPass && authOutput) {
     authButton.addEventListener('click', async () => {
-      authOutput.textContent = 'Kontaktiram server...';
       const username = (authUser.value || '').trim();
       const password = (authPass.value || '').trim();
       const mode = authCheckbox.checked ? 'vuln' : 'safe';
@@ -65,18 +90,26 @@ document.addEventListener('DOMContentLoaded', () => {
         // credentials, same-origin for browser to store cookies from same host
         if (!res.ok) {
           let errText = `Server returned ${res.status}`;
-          try { const j = await res.json(); if (j && j.message) errText += ` — ${j.message}`; } catch(_) {}
+          try { const j = await res.json(); if (j && j.message) errText += ` ${j.message}`; } catch(_) {}
           authOutput.textContent = errText;
           return;
         }
         const data = await res.json();
         // server response
-        showJSON(authOutput, data);
+        try {
+          if (data && data.message) {
+            authOutput.textContent = data.message;
+          } else {
+            authOutput.textContent = JSON.stringify(data, null, 2);
+          }
+        } catch (e) {
+          authOutput.textContent = String(data);
+        }
 
         // show document.cookie if vuln
         try {
           const cookieStr = document.cookie || '(no readable cookies)';
-          authOutput.textContent += '\n\n// document.cookie:\n' + cookieStr;
+          if (mode == 'vuln') { alert('Cookie readable in VULN mode \n' + cookieStr); }
         } catch (e) {
           // ignore
         }

@@ -33,10 +33,11 @@ async function init() {
 
     // seed data
     const messages = [
-        'Pozdrav',
-        'Privatna poruka 1',
-        'Ovo je poruka admina',
-        'Ovo je tajna poruka'
+        'admin',
+        'pozdrav',
+        'privatna poruka 1',
+        'ovo je poruka admina',
+        'ovo je tajna poruka'
     ];
     for (const msg of messages) {
         await client.query('INSERT INTO messages (content) VALUES ($1)', [msg]);
